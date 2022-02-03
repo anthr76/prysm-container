@@ -1,0 +1,57 @@
+---
+name: container-release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+       include:
+         - component: "beacon-chain"
+         - component: "validator"
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare
+        id: prep
+        run: |
+          echo ::set-output name=version::${GITHUB_REF##*/}
+
+      - name: Get Upstream Tag
+        run: echo UPSTREAM_TAG=$(grep "ENV PRYSM_VERSION" ./Dockerfile | cut -f2 -d"=") >> $GITHUB_ENV
+
+      - name: Install qemu dependency
+        id: qemu
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+
+      - name: Build
+        id: build
+        uses: redhat-actions/buildah-build@v2.9
+        with:
+         image: prysm
+         tags: v${{ steps.prep.outputs.version }} ${{ env.UPSTREAM_TAG }} latest ${{ matrix.component }}
+         oci: true
+         layers: true
+         build-args: |
+           ${{ matrix.component }}
+         containerfiles: ./Dockerfile
+         archs: amd64, arm64
+        
+      - name: Push
+        uses: redhat-actions/push-to-registry@v2.5.1
+        with:
+         image: ${{ steps.build.outputs.image }}
+         tags:  ${{ steps.build.outputs.tags }}
+         registry: ghcr.io/${{ github.actor }}
+         username: ${{ github.actor }}
+         password: ${{ secrets.CR_TOKEN }}
