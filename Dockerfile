@@ -3,7 +3,7 @@ FROM docker.io/library/ubuntu:18.04 as builder
 
 ARG COMPONENT
 # renovate: datasource=github-releases depName=prysmaticlabs/prysm
-ENV PRYSM_VERSION=v2.0.5
+ENV PRYSM_VERSION=v2.0.6
 
 RUN apt update \
     && apt install -y apt-transport-https libssl-dev libgmp-dev curl gnupg git python \
