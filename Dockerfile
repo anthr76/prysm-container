@@ -1,5 +1,5 @@
 
-FROM docker.io/library/ubuntu:18.04 as builder
+FROM docker.io/library/ubuntu:18.10 as builder
 
 ARG COMPONENT
 # renovate: datasource=github-releases depName=prysmaticlabs/prysm
