@@ -38,7 +38,7 @@ jobs:
         id: build
         uses: redhat-actions/buildah-build@v2.9
         with:
-         image: prysm
+         image: prysm/${{ matrix.component }}
          tags: v${{ steps.prep.outputs.version }} ${{ env.UPSTREAM_TAG }} latest ${{ matrix.component }}
          oci: true
          layers: true
