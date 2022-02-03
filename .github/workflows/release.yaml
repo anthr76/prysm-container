@@ -43,7 +43,7 @@ jobs:
          oci: true
          layers: true
          build-args: |
-           ${{ matrix.component }}
+           COMPONENT=${{ matrix.component }}
          containerfiles: ./Dockerfile
          archs: amd64, arm64
         
