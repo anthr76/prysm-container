@@ -1,22 +1,22 @@
 
-FROM docker.io/library/ubuntu:18.04 as builder
+FROM docker.io/library/ubuntu:focal-20220113 as builder
 
 ARG COMPONENT
 # renovate: datasource=github-releases depName=prysmaticlabs/prysm
 ENV PRYSM_VERSION=v2.0.5
 
-RUN apt update \
-    && apt install -y apt-transport-https libssl-dev libgmp-dev curl gnupg git python \
-    && curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > bazel.gpg \
-    && mv bazel.gpg /etc/apt/trusted.gpg.d/ \
-    && echo "deb [arch=$(dpkg --print-architecture)] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list \
-    && apt update \
-    && apt install -y bazel-4.2.2 \
-    && ln -s /usr/bin/bazel-4.2.2 /usr/bin/bazel \
+ENV \
+  DEBCONF_NONINTERACTIVE_SEEN=true \
+  DEBIAN_FRONTEND="noninteractive"
+
+RUN apt-get -qq update \
+    && apt-get install -y apt-transport-https libssl-dev python3 libgmp-dev curl gnupg git golang \
+    && go get github.com/bazelbuild/bazelisk \
+    && export PATH=$PATH:$(go env GOPATH)/bin \
     && git clone https://github.com/prysmaticlabs/prysm \
     && cd prysm \
     && git checkout ${PRYSM_VERSION} \
-    && bazel build //$COMPONENT:$COMPONENT --config=release
+    && bazelisk build //$COMPONENT:$COMPONENT --config=release
 
 FROM gcr.io/distroless/static:nonroot as runner
 
