@@ -10,7 +10,7 @@ ENV \
   DEBIAN_FRONTEND="noninteractive"
 
 RUN apt-get -qq update \
-    && apt-get install -y libtinfo-dev apt-transport-https libssl-dev python3 libgmp-dev curl gnupg git golang \
+    && apt-get install -y libtinfo5 apt-transport-https libssl-dev python3 libgmp-dev curl gnupg git golang \
     && go get github.com/bazelbuild/bazelisk \
     && export PATH=$PATH:$(go env GOPATH)/bin \
     && git clone https://github.com/prysmaticlabs/prysm \
