@@ -7,7 +7,8 @@ ENV PRYSM_VERSION=v2.0.5
 
 ENV \
   DEBCONF_NONINTERACTIVE_SEEN=true \
-  DEBIAN_FRONTEND="noninteractive"
+  DEBIAN_FRONTEND="noninteractive" \
+  USE_BAZEL_VERSION=4.2.2
 
 RUN apt-get -qq update \
     && apt-get install -y libtinfo5 apt-transport-https libssl-dev python3 libgmp-dev curl gnupg git golang \
