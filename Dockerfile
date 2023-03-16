@@ -3,7 +3,7 @@ FROM docker.io/library/ubuntu:focal-20220113 as builder
 
 ARG COMPONENT
 # renovate: datasource=github-releases depName=prysmaticlabs/prysm
-ENV PRYSM_VERSION=v2.0.5
+ENV PRYSM_VERSION=v3.2.2
 
 ENV \
   DEBCONF_NONINTERACTIVE_SEEN=true \
